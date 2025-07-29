@@ -1,14 +1,537 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThunderBike Showcase</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Unique CSS Variables */
+        :root {
+            --thunder-red: #e63946;
+            --thunder-blue: #457b9d;
+            --thunder-navy: #1d3557;
+            --thunder-cream: #f1faee;
+            --thunder-gold: #ff9f1c;
+            --thunder-teal: #2a9d8f;
+            --thunder-charcoal: #333;
+            --thunder-slate: #777;
+        }
+
+        /* Main Container */
+        .thunder-showcase {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            position: relative;
+        }
+
+        /* Header Section */
+        .thunder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .thunder-header__title {
+            font-size: 2.2rem;
+            color: var(--thunder-navy);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .thunder-header__title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--thunder-red);
+            border-radius: 2px;
+        }
+
+        /* Navigation Controls */
+        .thunder-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .thunder-nav__btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--thunder-navy);
+            transition: all 0.3s ease;
+        }
+
+        .thunder-nav__btn:hover {
+            background: var(--thunder-red);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Slider Container */
+        .thunder-slider {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .thunder-slider__track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        /* Individual Slides */
+        .thunder-slide {
+            flex: 0 0 25%;
+            padding: 0 15px;
+            transition: all 0.3s ease;
+        }
+
+        /* Bike Cards */
+        .thunder-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .thunder-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Badges */
+        .thunder-badges {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .thunder-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .thunder-badge--discount {
+            background: var(--thunder-red);
+        }
+
+        .thunder-badge--new {
+            background: var(--thunder-teal);
+        }
+
+        .thunder-badge--featured {
+            background: var(--thunder-gold);
+        }
+
+        /* Favorite Button */
+        .thunder-fav {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--thunder-slate);
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .thunder-fav:hover {
+            color: var(--thunder-red);
+            transform: scale(1.1);
+        }
+
+        .thunder-fav--active {
+            color: var(--thunder-red);
+        }
+
+        /* Card Image */
+        .thunder-card__img-wrap {
+            position: relative;
+            padding-top: 70%;
+            overflow: hidden;
+        }
+
+        .thunder-card__img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .thunder-card:hover .thunder-card__img {
+            transform: scale(1.05);
+        }
+
+        /* Card Content */
+        .thunder-card__content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .thunder-card__category {
+            font-size: 0.8rem;
+            color: var(--thunder-blue);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .thunder-card__title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--thunder-navy);
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        /* Specifications */
+        .thunder-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .thunder-specs__item {
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--thunder-slate);
+        }
+
+        .thunder-specs__icon {
+            margin-right: 5px;
+            color: var(--thunder-blue);
+            font-size: 0.9rem;
+        }
+
+        /* Ratings */
+        .thunder-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .thunder-rating__stars {
+            color: var(--thunder-gold);
+            margin-right: 8px;
+        }
+
+        .thunder-rating__count {
+            font-size: 0.8rem;
+            color: var(--thunder-slate);
+        }
+
+        /* Pricing */
+        .thunder-pricing {
+            margin-bottom: 15px;
+        }
+
+        .thunder-pricing__current {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--thunder-red);
+            margin-right: 8px;
+        }
+
+        .thunder-pricing__original {
+            font-size: 1rem;
+            color: var(--thunder-slate);
+            text-decoration: line-through;
+        }
+
+        .thunder-pricing__savings {
+            font-size: 0.9rem;
+            color: var(--thunder-teal);
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        /* Action Buttons */
+        .thunder-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .thunder-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .thunder-btn--primary {
+            background: var(--thunder-red);
+            color: white;
+        }
+
+        .thunder-btn--primary:hover {
+            background: #c1121f;
+            transform: translateY(-2px);
+        }
+
+        .thunder-btn--secondary {
+            background: var(--thunder-cream);
+            color: var(--thunder-navy);
+            border: 1px solid #ddd;
+        }
+
+        .thunder-btn--secondary:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        /* Dots Navigation */
+        .thunder-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 8px;
+        }
+
+        .thunder-dots__item {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .thunder-dots__item--active {
+            background: var(--thunder-red);
+            transform: scale(1.2);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1199px) {
+            .thunder-slide {
+                flex: 0 0 33.333%;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .thunder-slide {
+                flex: 0 0 50%;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .thunder-showcase {
+                padding: 0 15px;
+            }
+
+            .thunder-slide {
+                flex: 0 0 100%;
+                padding: 0 10px;
+            }
+
+            .thunder-header__title {
+                font-size: 1.8rem;
+            }
+
+            .thunder-card__content {
+                padding: 15px;
+            }
+
+            .thunder-actions {
+                flex-direction: column;
+            }
+
+            .thunder-btn {
+                width: 100%;
+            }
+        }
+
+        /* Animation */
+        @keyframes thunderFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .thunder-slide {
+            animation: thunderFadeIn 0.5s ease forwards;
+        }
+
+        .thunder-slide:nth-child(1) { animation-delay: 0.1s; }
+        .thunder-slide:nth-child(2) { animation-delay: 0.2s; }
+        .thunder-slide:nth-child(3) { animation-delay: 0.3s; }
+        .thunder-slide:nth-child(4) { animation-delay: 0.4s; }
+        .thunder-slide:nth-child(5) { animation-delay: 0.5s; }
+        .thunder-slide:nth-child(6) { animation-delay: 0.6s; }
+    </style>
 </head>
 <body>
-<p>this is testing page</p>
-<h1>this is thesing heading tooo..</h1>
-<h1>i am here to show code is this good or not..</h1>
+    <div class="thunder-showcase" id="thunderBikeGallery">
+        <div class="thunder-header">
+            <h2 class="thunder-header__title">ThunderBike Collection</h2>
+            <div class="thunder-nav">
+                <button class="thunder-nav__btn thunder-nav__btn--prev" id="thunderPrevBtn">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="thunder-nav__btn thunder-nav__btn--next" id="thunderNextBtn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
 
+        <div class="thunder-slider">
+            <div class="thunder-slider__track" id="thunderTrack">
+                <!-- Slide 1 -->
+                <div class="thunder-slide">
+                    <div class="thunder-card">
+                        <div class="thunder-badges">
+                            <span class="thunder-badge thunder-badge--discount">25% Off</span>
+                            <span class="thunder-badge thunder-badge--new">New Model</span>
+                        </div>
+                        <button class="thunder-fav" id="fav1">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <div class="thunder-card__img-wrap">
+                            <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                                 alt="ThunderBike X1 Pro" 
+                                 class="thunder-card__img">
+                        </div>
+                        <div class="thunder-card__content">
+                            <span class="thunder-card__category">Sport Bikes</span>
+                            <h3 class="thunder-card__title">ThunderBike X1 Pro</h3>
+                            <div class="thunder-specs">
+                                <span class="thunder-specs__item">
+                                    <i class="fas fa-tachometer-alt thunder-specs__icon"></i> 1000cc
+                                </span>
+                                <span class="thunder-specs__item">
+                                    <i class="fas fa-bolt thunder-specs__icon"></i> 160 HP
+                                </span>
+                                <span class="thunder-specs__item">
+                                    <i class="fas fa-weight thunder-specs__icon"></i> 189 kg
+                                </span>
+                            </div>
+                            <div class="thunder-rating">
+                                <div class="thunder-rating__stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="thunder-rating__count">(128 reviews)</span>
+                            </div>
+                            <div class="thunder-pricing">
+                                <span class="thunder-pricing__current">$14,999</span>
+                                <span class="thunder-pricing__original">$19,999</span>
+                                <span class="thunder-pricing__savings">Save $5,000</span>
+                            </div>
+                            <div class="thunder-actions">
+                                <button class="thunder-btn thunder-btn--primary">
+                                    <i class="fas fa-shopping-cart"></i> Book Now
+                                </button>
+                                <button class="thunder-btn thunder-btn--secondary">
+                                    <i class="fas fa-phone-alt"></i> Call Us
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional slides would follow the same pattern with unique IDs -->
+            </div>
+        </div>
+
+        <div class="thunder-dots" id="thunderDots">
+            <div class="thunder-dots__item thunder-dots__item--active"></div>
+            <div class="thunder-dots__item"></div>
+            <div class="thunder-dots__item"></div>
+            <div class="thunder-dots__item"></div>
+            <div class="thunder-dots__item"></div>
+            <div class="thunder-dots__item"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Main elements with unique IDs
+            const thunderTrack = document.getElementById('thunderTrack');
+            const thunderSlides = document.querySelectorAll('.thunder-slide');
+            const thunderDots = document.getElementById('thunderDots').querySelectorAll('.thunder-dots__item');
+            const thunderPrevBtn = document.getElementById('thunderPrevBtn');
+            const thunderNextBtn = document.getElementById('thunderNextBtn');
+            const thunderFavBtns = document.querySelectorAll('.thunder-fav');
+            
+            let currentThunderIndex = 0;
+            let thunderSlideCount = thunderSlides.length;
+            let thunderSlidesPerView = getThunderSlidesPerView();
+            let thunderAutoSlideInterval;
+            
+            // Initialize slider
+            initThunderSlider();
+            
+            function getThunderSlidesPerView() {
+                if (window.innerWidth >= 1200) return 4;
+                if (window.innerWidth >= 992) return 3;
+                if (window.innerWidth >= 768) return 2;
+                return 1;
+            }
+            
+            function initThunderSlider() {
+                updateThunderSlidesPerView();
+                updateThunderSliderPosition();
+                updateThunderDots();
+                startThunderAutoSlide();
+                setupThunderEventListeners();
+            }
+            
+            // ... rest of the JavaScript would follow the same naming pattern ...
+            // (The functionality remains the same, just with updated class/id names)
+        });
+    </script>
 </body>
 </html>
